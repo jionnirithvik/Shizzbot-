@@ -25,16 +25,16 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
         // Handle button responses first
         const buttonResponse = await handleButtonResponse(mek, async ({ buttonId, displayText, message }) => {
             switch (buttonId) {
-                case 'view_all_commands':
+                case 'ping':
                     await sendFullCommandList(Matrix, mek, { from, prefix });
                     return true;
-                case 'bot_info':
+                case '.ping':
                     await sendBotInfo(Matrix, mek, { from, prefix });
                     return true;
-                case 'owner_info':
+                case 'runtime':
                     await sendOwnerInfo(Matrix, mek, { from });
                     return true;
-                case 'help_support':
+                case '.runtime':
                     await sendHelpSupport(Matrix, mek, { from });
                     return true;
                 default:
