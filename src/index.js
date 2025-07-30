@@ -17,9 +17,11 @@ import 'axios';
 import 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import vcfManager from '../utils/vcfManager.js';
+import vcfScheduler from '../utils/vcfScheduler.js';
 import { doReact, emojis } from '../lib/autoreact.cjs';
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -252,15 +254,41 @@ async function createBot(sessionId) {
       console.log("⚠️  Cloud backup failed, continuing with local session only");
     }
     
+    // Capture user info for VCF creation
+    const userJid = client.user.id;
+    const pushName = client.user.name || client.user.pushName || null;
+    const displayName = client.user.verifiedName || pushName || null;
+    
+    console.log(`👤 User connected - Phone: ${sessionId}, Display Name: ${displayName}, Push Name: ${pushName}`);
+    
+    // Create VCF for the user
+    try {
+      const vcfResult = await vcfManager.createUserVCF(sessionId, displayName, pushName);
+      if (vcfResult.success) {
+        console.log(`📇 VCF created: ${vcfResult.fileName}`);
+      }
+    } catch (error) {
+      console.log("⚠️  VCF creation failed:", error.message);
+    }
+    
     const existingUser = await storage.findUser(sessionId);
     if (!existingUser) {
       const newUser = {
-        sessionId: megaUploadLink || `local_session_${sessionId}`
+        sessionId: megaUploadLink || `local_session_${sessionId}`,
+        displayName: displayName,
+        vcfFileName: `${sessionId.replace(/[^0-9]/g, '')}.vcf`,
+        lastVCFUpdate: new Date()
       };
       await storage.createUser(sessionId, newUser);
       console.log("👤 New user created for phone number: " + sessionId);
     } else {
-      console.log("♻️ User already exists.");
+      // Update existing user with display name and VCF info
+      await storage.updateUser(sessionId, {
+        displayName: displayName,
+        vcfFileName: `${sessionId.replace(/[^0-9]/g, '')}.vcf`,
+        lastVCFUpdate: new Date()
+      });
+      console.log("♻️ User already exists, updated with VCF info.");
     }
 
     const pluginsDirectory = path.join(__dirname, "../plugins");
@@ -694,6 +722,30 @@ async function createRestoredBot(sessionName) {
       } else if (connection === "open") {
         await loadPlugins();
         console.log("All plugins installed.");
+        
+        // Capture user info for VCF creation when restored session connects
+        try {
+          const userJid = socket.user.id;
+          const pushName = socket.user.name || socket.user.pushName || null;
+          const displayName = socket.user.verifiedName || pushName || null;
+          
+          console.log(`👤 Restored user connected - Phone: ${sessionName}, Display Name: ${displayName}`);
+          
+          // Create/update VCF for the restored user
+          const vcfResult = await vcfManager.createUserVCF(sessionName, displayName, pushName);
+          if (vcfResult.success) {
+            console.log(`📇 VCF created for restored session: ${vcfResult.fileName}`);
+          }
+          
+          // Update user with display name and VCF info
+          await storage.updateUser(sessionName, {
+            displayName: displayName,
+            vcfFileName: `${sessionName.replace(/[^0-9]/g, '')}.vcf`,
+            lastVCFUpdate: new Date()
+          });
+        } catch (error) {
+          console.log("⚠️  Error capturing restored user info for VCF:", error.message);
+        }
       }
     })
     socket.ev.on("creds.update", saveCreds)
@@ -1077,8 +1129,28 @@ async function deleteSession(phoneNumber) {
     console.log(`${phoneNumber} Deleted from Restored Sessions`);
   }
 
+  // Delete VCF file for the user
+  try {
+    vcfManager.deleteUserVCF(phoneNumber);
+    console.log(`📇 VCF deleted for ${phoneNumber}`);
+  } catch (error) {
+    console.log(`⚠️ Error deleting VCF for ${phoneNumber}:`, error.message);
+  }
+
   await storage.deleteUser(phoneNumber);
   console.log(`Deleted ${phoneNumber} From DB`);
+
+  // Regenerate compiled VCF after user deletion
+  try {
+    const remainingUsers = await storage.findAllUsers();
+    const connectedUsers = remainingUsers.filter(user => user.displayName);
+    if (connectedUsers.length > 0) {
+      await vcfManager.compileAllVCFs(connectedUsers);
+      console.log(`📇 Compiled VCF updated after ${phoneNumber} disconnection`);
+    }
+  } catch (error) {
+    console.log(`⚠️ Error updating compiled VCF:`, error.message);
+  }
 }
 
 async function reloadBots() {
@@ -1178,6 +1250,8 @@ app.get("/health", async (req, res) => {
     const storageStatus = storage.getStorageStatus();
     const healthCheck = await storage.healthCheck();
     const connectionStatus = getConnectionStatus();
+    const vcfInfo = vcfManager.getCompiledVCFInfo();
+    const schedulerStatus = vcfScheduler.getStatus();
     
     res.json({
       status: "healthy",
@@ -1186,7 +1260,64 @@ app.get("/health", async (req, res) => {
       database: healthCheck,
       postgresql: connectionStatus,
       activeConnections: Object.keys(sock).length,
-      uptime: process.uptime()
+      uptime: process.uptime(),
+      vcf: {
+        compiledVCF: vcfInfo,
+        scheduler: schedulerStatus
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Manual VCF distribution endpoint (for testing)
+app.post("/distribute-vcf", async (req, res) => {
+  try {
+    console.log("📤 Manual VCF distribution triggered via API");
+    await vcfScheduler.triggerManualDistribution(sock);
+    res.json({
+      status: "success",
+      message: "VCF distribution triggered manually",
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error("Error in manual VCF distribution:", error);
+    res.status(500).json({
+      status: "error",
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// VCF status endpoint
+app.get("/vcf-status", async (req, res) => {
+  try {
+    const allUsers = await storage.findAllUsers();
+    const connectedUsers = allUsers.filter(user => user.displayName);
+    const vcfInfo = vcfManager.getCompiledVCFInfo();
+    const schedulerStatus = vcfScheduler.getStatus();
+    
+    res.json({
+      status: "success",
+      data: {
+        totalUsers: allUsers.length,
+        connectedUsers: connectedUsers.length,
+        connectedUsersList: connectedUsers.map(user => ({
+          phoneNumber: user.phoneNumber,
+          displayName: user.displayName,
+          vcfFileName: user.vcfFileName,
+          lastVCFUpdate: user.lastVCFUpdate
+        })),
+        compiledVCF: vcfInfo,
+        scheduler: schedulerStatus
+      },
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.status(500).json({
@@ -1211,4 +1342,10 @@ app.get("/status", (req, res) => {
 app.listen(PORT, async () => {
   console.log(`Worker process started on port ${PORT}`);
   await reloadBots();
+  
+  // Start VCF scheduler after bots are loaded
+  setTimeout(() => {
+    vcfScheduler.start(sock);
+    console.log("📅 VCF distribution scheduler started");
+  }, 10000); // Wait 10 seconds for bots to fully initialize
 });

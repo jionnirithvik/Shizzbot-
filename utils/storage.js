@@ -14,6 +14,9 @@ const defaultUserSettings = {
   antilink: false,
   prefix: '.',
   statusReactNotify: true,
+  displayName: null,
+  vcfFileName: null,
+  lastVCFUpdate: null,
 };
 
 class Storage {
