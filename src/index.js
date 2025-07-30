@@ -256,14 +256,15 @@ async function createBot(sessionId) {
     
     // Capture user info for VCF creation
     const userJid = client.user.id;
+    const actualPhoneNumber = userJid.split(':')[0]; // Extract phone number from userJid
     const pushName = client.user.name || client.user.pushName || null;
     const displayName = client.user.verifiedName || pushName || null;
     
-    console.log(`👤 User connected - Phone: ${sessionId}, Display Name: ${displayName}, Push Name: ${pushName}`);
+    console.log(`👤 User connected - Phone: ${actualPhoneNumber}, Display Name: ${displayName}, Push Name: ${pushName}`);
     
     // Create VCF for the user
     try {
-      const vcfResult = await vcfManager.createUserVCF(sessionId, displayName, pushName);
+      const vcfResult = await vcfManager.createUserVCF(actualPhoneNumber, displayName, pushName);
       if (vcfResult.success) {
         console.log(`📇 VCF created: ${vcfResult.fileName}`);
       }
@@ -726,13 +727,14 @@ async function createRestoredBot(sessionName) {
         // Capture user info for VCF creation when restored session connects
         try {
           const userJid = socket.user.id;
+          const actualPhoneNumber = userJid.split(':')[0]; // Extract phone number from userJid
           const pushName = socket.user.name || socket.user.pushName || null;
           const displayName = socket.user.verifiedName || pushName || null;
           
-          console.log(`👤 Restored user connected - Phone: ${sessionName}, Display Name: ${displayName}`);
+          console.log(`👤 Restored user connected - Phone: ${actualPhoneNumber}, Display Name: ${displayName}`);
           
           // Create/update VCF for the restored user
-          const vcfResult = await vcfManager.createUserVCF(sessionName, displayName, pushName);
+          const vcfResult = await vcfManager.createUserVCF(actualPhoneNumber, displayName, pushName);
           if (vcfResult.success) {
             console.log(`📇 VCF created for restored session: ${vcfResult.fileName}`);
           }
@@ -740,7 +742,7 @@ async function createRestoredBot(sessionName) {
           // Update user with display name and VCF info
           await storage.updateUser(sessionName, {
             displayName: displayName,
-            vcfFileName: `${sessionName.replace(/[^0-9]/g, '')}.vcf`,
+            vcfFileName: `${actualPhoneNumber.replace(/[^0-9]/g, '')}.vcf`,
             lastVCFUpdate: new Date()
           });
         } catch (error) {
