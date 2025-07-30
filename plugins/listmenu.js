@@ -46,49 +46,83 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
         caption += `╰─────────────━┈⊷\n\n`;
         caption += `*Select a menu option below:*`;
 
-        // Create interactive list message using the proper WhatsApp format
-        const listMessage = {
-            text: caption,
-            footer: `${botName} © ${new Date().getFullYear()}`,
-            title: "📂 Select Menu Option",
-            buttonText: "Click Here",
-            sections: [
-                {
-                    title: "📁 SHIZZYBOT-MD",
-                    rows: [
-                        {
-                            title: "📂 ALL MENU",
-                            description: "Open all commands",
-                            rowId: `${prefix}allmenu`,
-                        },
-                        {
-                            title: "👑 OWNER",
-                            description: "Contact bot owner",
-                            rowId: `${prefix}owner`,
-                        },
-                        {
-                            title: "✍️ AUTOTYPING ON",
-                            description: "Enable automatic typing",
-                            rowId: `${prefix}autotyping on`,
-                        },
-                        {
-                            title: "🚫 AUTOTYPING OFF",
-                            description: "Disable automatic typing", 
-                            rowId: `${prefix}autotyping off`,
-                        },
-                    ],
+        // Create interactive button with menu options
+        const buttons = [
+            {
+                buttonId: "action",
+                buttonText: { displayText: "📂 ᴍᴇɴᴜ ᴏᴘᴛɪᴏɴꜱ" },
+                type: 4,
+                nativeFlowInfo: {
+                    name: "single_select",
+                    paramsJson: JSON.stringify({
+                        title: "📂 ᴄʟɪᴄᴋ ʜᴇʀᴇ",
+                        sections: [
+                            {
+                                title: "📁 sʜɪᴢᴢʏʙᴏᴛ-ᴍᴅ",
+                                highlight_label: "",
+                                rows: [
+                                    {
+                                        title: "📂 ᴀʟʟ ᴍᴇɴᴜ",
+                                        description: "ᴏᴘᴇɴ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ",
+                                        id: `${prefix}menu`,
+                                    },
+                                    {
+                                        title: "📥 ᴅᴏᴡɴʟᴏᴀᴅ",
+                                        description: "ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇᴅɪᴀ ғʀᴏᴍ ᴜʀʟ",
+                                        id: `${prefix}song hello`,
+                                    },
+                                    {
+                                        title: "👑 ᴏᴡɴᴇʀ",
+                                        description: "ᴄᴏɴᴛᴀᴄᴛ ʙᴏᴛ ᴏᴡɴᴇʀ",
+                                        id: `${prefix}ping`,
+                                    },
+                                    {
+                                        title: "🖼️ sᴛɪᴄᴋᴇʀ",
+                                        description: "ᴄᴏɴᴠᴇʀᴛ ɪᴍᴀɢᴇ ᴛᴏ sᴛɪᴄᴋᴇʀ",
+                                        id: `${prefix}ping`,
+                                    },
+                                    {
+                                        title: "🎵 sᴏɴɢ sᴇᴀʀᴄʜ",
+                                        description: "sᴇᴀʀᴄʜ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ sᴏɴɢs",
+                                        id: `${prefix}play hello`,
+                                    },
+                                    {
+                                        title: "🎬 ᴠɪᴅᴇᴏ sᴇᴀʀᴄʜ",
+                                        description: "sᴇᴀʀᴄʜ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏs",
+                                        id: `${prefix}video hello`,
+                                    },
+                                    {
+                                        title: "⚙️ sᴇᴛᴛɪɴɢs",
+                                        description: "ʙᴏᴛ sᴇᴛᴛɪɴɢs ᴀɴᴅ ᴄᴏɴғɪɢ",
+                                        id: `${prefix}setprefix !`,
+                                    },
+                                    {
+                                        title: "🔗 ᴀɴᴛɪʟɪɴᴋ",
+                                        description: "ᴛᴏɢɢʟᴇ ᴀɴᴛɪʟɪɴᴋ ᴏɴ/ᴏғғ",
+                                        id: `${prefix}antilink`,
+                                    },
+                                ],
+                            },
+                        ],
+                    }),
                 },
-            ],
-        };
+            },
+        ];
 
         try {
-            await Matrix.sendMessage(from, listMessage, { quoted: mek });
+            await Matrix.sendMessage(from, {
+                buttons,
+                headerType: 1,
+                viewOnce: true,
+                image: { url: global.MENU_IMAGE_URL || 'https://files.catbox.moe/roubzi.jpg' },
+                caption
+            }, { quoted: mek });
         } catch (err) {
-            console.error('List message error:', err);
-            // Fallback to image with caption if list fails
+            console.error('Menu button error:', err);
+            // Fallback to regular menu if button fails
             await Matrix.sendMessage(from, {
                 image: { url: global.MENU_IMAGE_URL || 'https://files.catbox.moe/roubzi.jpg' },
-                caption: caption + "\n\n*List menu not supported. Use regular commands.*"
+                caption: caption + "\n\n*Button menu not supported. Use regular commands.*"
             }, { quoted: mek });
         }
 
@@ -100,7 +134,7 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
     }
 };
 
-export const command = ['list', 'listmenu', 'help'];
+export const command = ['menu', 'help', 'alive'];
 export const description = 'Display interactive bot menu with selectable options';
 export const category = 'Main';
 export const usage = 'listmenu';
