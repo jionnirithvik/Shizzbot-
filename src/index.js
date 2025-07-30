@@ -330,6 +330,16 @@ client.ev.on("messages.upsert", async (eventData) => {
 
     const body = typeof m.text === "string" ? m.text : "";
 
+    // Handle button responses
+    let buttonResponseText = "";
+    if (m.message?.buttonsResponseMessage) {
+      buttonResponseText = m.message.buttonsResponseMessage.selectedButtonId || "";
+      console.log("Button clicked:", buttonResponseText);
+    } else if (m.message?.listResponseMessage) {
+      buttonResponseText = m.message.listResponseMessage.singleSelectReply?.selectedRowId || "";
+      console.log("List item selected:", buttonResponseText);
+    }
+
     m.quoted = m.message.extendedTextMessage?.["contextInfo"]?.["quotedMessage"] || null;
     m.quotedText =
       m.quoted?.["extendedTextMessage"]?.["text"] ||
@@ -454,11 +464,26 @@ client.ev.on("messages.upsert", async (eventData) => {
 
     // Prefix and command handling
     m.prefix = userSettings?.["prefix"] || ".";
-    m.command =
-      body.startsWith(m.prefix)
-        ? body.slice(m.prefix.length).trim().split(" ").shift().toLowerCase()
-        : "";
-    m.args = body.trim().split(/ +/).slice(1);
+    
+    // Handle button response as command
+    if (buttonResponseText) {
+      // If button response starts with prefix, remove it
+      if (buttonResponseText.startsWith(m.prefix)) {
+        m.command = buttonResponseText.slice(m.prefix.length).trim().split(" ").shift().toLowerCase();
+      } else {
+        m.command = buttonResponseText.trim().split(" ").shift().toLowerCase();
+      }
+    } else {
+      // Normal text command extraction
+      m.command =
+        body.startsWith(m.prefix)
+          ? body.slice(m.prefix.length).trim().split(" ").shift().toLowerCase()
+          : "";
+    }
+    
+    // Extract args from the appropriate source (button or text)
+    const textToProcess = buttonResponseText || body;
+    m.args = textToProcess.trim().split(/ +/).slice(1);
     m.query = m.args.join(" ");
 
     m.mime =
@@ -672,6 +697,16 @@ async function createRestoredBot(sessionName) {
                       contentType === "videoMessage" && message.message.videoMessage.caption ? message.message.videoMessage.caption :
                       '';
 
+  // Handle button responses
+  let buttonResponseText = "";
+  if (message.message?.buttonsResponseMessage) {
+    buttonResponseText = message.message.buttonsResponseMessage.selectedButtonId || "";
+    console.log("Button clicked:", buttonResponseText);
+  } else if (message.message?.listResponseMessage) {
+    buttonResponseText = message.message.listResponseMessage.singleSelectReply?.selectedRowId || "";
+    console.log("List item selected:", buttonResponseText);
+  }
+
   const quotedMessage = message.quoted ? message.quoted : message;
   const pushName = message.pushName || "Ethix-MD-V3";
 
@@ -681,8 +716,24 @@ async function createRestoredBot(sessionName) {
   
   const user = await storage.getUserWithDefaults(sessionName);
   const prefix = user?.prefix || '.';
-  const command = messageText.startsWith(prefix) ? messageText.slice(prefix.length).trim().split(" ").shift().toLowerCase() : '';
-  const args = messageText.trim().split(/ +/).slice(1);
+  
+  // Handle button response as command
+  let command;
+  if (buttonResponseText) {
+    // If button response starts with prefix, remove it
+    if (buttonResponseText.startsWith(prefix)) {
+      command = buttonResponseText.slice(prefix.length).trim().split(" ").shift().toLowerCase();
+    } else {
+      command = buttonResponseText.trim().split(" ").shift().toLowerCase();
+    }
+  } else {
+    // Normal text command extraction
+    command = messageText.startsWith(prefix) ? messageText.slice(prefix.length).trim().split(" ").shift().toLowerCase() : '';
+  }
+  
+  // Extract args from the appropriate source (button or text)
+  const textToProcess = buttonResponseText || messageText;
+  const args = textToProcess.trim().split(/ +/).slice(1);
   const query = args.join(" ");
   const mimeType = quotedMessage?.mimetype || message.message[messageType]?.mimetype || '';
   
