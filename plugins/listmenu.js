@@ -64,37 +64,12 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
                                     {
                                         title: "📂 ᴀʟʟ ᴍᴇɴᴜ",
                                         description: "ᴏᴘᴇɴ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ",
-                                        id: `${prefix}menu`,
+                                        id: `${prefix}allmenu`,
                                     },
                                     {
                                         title: "📥 ᴅᴏᴡɴʟᴏᴀᴅ",
                                         description: "ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇᴅɪᴀ ғʀᴏᴍ ᴜʀʟ",
                                         id: `${prefix}song hello`,
-                                    },
-                                    {
-                                        title: "👑 ᴏᴡɴᴇʀ",
-                                        description: "ᴄᴏɴᴛᴀᴄᴛ ʙᴏᴛ ᴏᴡɴᴇʀ",
-                                        id: `${prefix}ping`,
-                                    },
-                                    {
-                                        title: "🖼️ sᴛɪᴄᴋᴇʀ",
-                                        description: "ᴄᴏɴᴠᴇʀᴛ ɪᴍᴀɢᴇ ᴛᴏ sᴛɪᴄᴋᴇʀ",
-                                        id: `${prefix}ping`,
-                                    },
-                                    {
-                                        title: "🎵 sᴏɴɢ sᴇᴀʀᴄʜ",
-                                        description: "sᴇᴀʀᴄʜ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ sᴏɴɢs",
-                                        id: `${prefix}play hello`,
-                                    },
-                                    {
-                                        title: "🎬 ᴠɪᴅᴇᴏ sᴇᴀʀᴄʜ",
-                                        description: "sᴇᴀʀᴄʜ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏs",
-                                        id: `${prefix}video hello`,
-                                    },
-                                    {
-                                        title: "⚙️ sᴇᴛᴛɪɴɢs",
-                                        description: "ʙᴏᴛ sᴇᴛᴛɪɴɢs ᴀɴᴅ ᴄᴏɴғɪɢ",
-                                        id: `${prefix}setprefix !`,
                                     },
                                     {
                                         title: "🔗 ᴀɴᴛɪʟɪɴᴋ",
