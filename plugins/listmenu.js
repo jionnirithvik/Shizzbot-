@@ -46,63 +46,49 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
         caption += `╰─────────────━┈⊷\n\n`;
         caption += `*Select a menu option below:*`;
 
-        // Create interactive button with menu options
-        const buttons = [
-            {
-                buttonId: "action",
-                buttonText: { displayText: "📂 ᴍᴇɴᴜ ᴏᴘᴛɪᴏɴꜱ" },
-                type: 4,
-                nativeFlowInfo: {
-                    name: "single_select",
-                    paramsJson: JSON.stringify({
-                        title: "📂 ᴄʟɪᴄᴋ ʜᴇʀᴇ",
-                        sections: [
-                            {
-                                title: "📁 sʜɪᴢᴢʏʙᴏᴛ-ᴍᴅ",
-                                highlight_label: "",
-                                rows: [
-                                    {
-                                        title: "📂 ᴀʟʟ ᴍᴇɴᴜ",
-                                        description: "ᴏᴘᴇɴ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ",
-                                        id: `${prefix}allmenu`,
-                                    },
-                                    {
-                                        title: "👑 ᴏᴡɴᴇʀ",
-                                        description: "ᴄᴏɴᴛᴀᴄᴛ ʙᴏᴛ ᴏᴡɴᴇʀ",
-                                        id: `${prefix}owner`,
-                                    },
-                                    {
-                                        title: "✍️ ᴀᴜᴛᴏᴛʏᴘɪɴɢ ᴏɴ",
-                                        description: "ᴇɴᴀʙʟᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄ ᴛʏᴘɪɴɢ",
-                                        id: `${prefix}autotyping on`,
-                                    },
-                                    {
-                                        title: "🚫 ᴀᴜᴛᴏᴛʏᴘɪɴɢ ᴏғғ",
-                                        description: "ᴅɪsᴀʙʟᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄ ᴛʏᴘɪɴɢ",
-                                        id: `${prefix}autotyping off`,
-                                    },
-                                ],
-                            },
-                        ],
-                    }),
+        // Create interactive list message using the proper WhatsApp format
+        const listMessage = {
+            text: caption,
+            footer: `${botName} © ${new Date().getFullYear()}`,
+            title: "📂 Select Menu Option",
+            buttonText: "Click Here",
+            sections: [
+                {
+                    title: "📁 SHIZZYBOT-MD",
+                    rows: [
+                        {
+                            title: "📂 ALL MENU",
+                            description: "Open all commands",
+                            rowId: `${prefix}allmenu`,
+                        },
+                        {
+                            title: "👑 OWNER",
+                            description: "Contact bot owner",
+                            rowId: `${prefix}owner`,
+                        },
+                        {
+                            title: "✍️ AUTOTYPING ON",
+                            description: "Enable automatic typing",
+                            rowId: `${prefix}autotyping on`,
+                        },
+                        {
+                            title: "🚫 AUTOTYPING OFF",
+                            description: "Disable automatic typing", 
+                            rowId: `${prefix}autotyping off`,
+                        },
+                    ],
                 },
-            },
-        ];
+            ],
+        };
 
         try {
-            await Matrix.sendMessage(from, {
-                buttons,
-                headerType: 1,
-                viewOnce: true,
-                image: { url: global.MENU_IMAGE_URL || 'https://files.catbox.moe/roubzi.jpg' },
-                caption
-            }, { quoted: mek });
+            await Matrix.sendMessage(from, listMessage, { quoted: mek });
         } catch (err) {
-            console.error('Menu button error:', err);
-            // Fallback to regular menu if button fails
+            console.error('List message error:', err);
+            // Fallback to image with caption if list fails
             await Matrix.sendMessage(from, {
                 image: { url: global.MENU_IMAGE_URL || 'https://files.catbox.moe/roubzi.jpg' },
-                caption: caption + "\n\n*Button menu not supported. Use regular commands.*"
+                caption: caption + "\n\n*List menu not supported. Use regular commands.*"
             }, { quoted: mek });
         }
 

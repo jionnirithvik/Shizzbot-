@@ -338,6 +338,36 @@ client.ev.on("messages.upsert", async (eventData) => {
     } else if (m.message?.listResponseMessage) {
       buttonResponseText = m.message.listResponseMessage.singleSelectReply?.selectedRowId || "";
       console.log("List item selected:", buttonResponseText);
+    } else if (m.message?.interactiveResponseMessage) {
+      // Handle interactive message responses (nativeFlowInfo responses)
+      const interactiveResponse = m.message.interactiveResponseMessage;
+      console.log("Interactive response received:", JSON.stringify(interactiveResponse, null, 2));
+      
+      if (interactiveResponse.nativeFlowResponseMessage) {
+        const flowResponse = interactiveResponse.nativeFlowResponseMessage;
+        if (flowResponse.paramsJson) {
+          try {
+            const params = JSON.parse(flowResponse.paramsJson);
+            buttonResponseText = params.id || "";
+            console.log("Interactive flow response:", buttonResponseText);
+          } catch (e) {
+            console.log("Error parsing flow response params:", e);
+          }
+        }
+      } else if (interactiveResponse.body?.text) {
+        buttonResponseText = interactiveResponse.body.text;
+        console.log("Interactive body response:", buttonResponseText);
+      }
+    } else if (m.message?.templateButtonReplyMessage) {
+      // Handle template button replies
+      buttonResponseText = m.message.templateButtonReplyMessage.selectedId || "";
+      console.log("Template button clicked:", buttonResponseText);
+    }
+
+    // Additional debugging for unknown button types
+    if (!buttonResponseText && (m.type !== 'conversation' && m.type !== 'extendedTextMessage')) {
+      console.log("Unknown message type received:", m.type);
+      console.log("Message content:", JSON.stringify(m.message, null, 2));
     }
 
     m.quoted = m.message.extendedTextMessage?.["contextInfo"]?.["quotedMessage"] || null;
@@ -705,6 +735,36 @@ async function createRestoredBot(sessionName) {
   } else if (message.message?.listResponseMessage) {
     buttonResponseText = message.message.listResponseMessage.singleSelectReply?.selectedRowId || "";
     console.log("List item selected:", buttonResponseText);
+  } else if (message.message?.interactiveResponseMessage) {
+    // Handle interactive message responses (nativeFlowInfo responses)
+    const interactiveResponse = message.message.interactiveResponseMessage;
+    console.log("Interactive response received:", JSON.stringify(interactiveResponse, null, 2));
+    
+    if (interactiveResponse.nativeFlowResponseMessage) {
+      const flowResponse = interactiveResponse.nativeFlowResponseMessage;
+      if (flowResponse.paramsJson) {
+        try {
+          const params = JSON.parse(flowResponse.paramsJson);
+          buttonResponseText = params.id || "";
+          console.log("Interactive flow response:", buttonResponseText);
+        } catch (e) {
+          console.log("Error parsing flow response params:", e);
+        }
+      }
+    } else if (interactiveResponse.body?.text) {
+      buttonResponseText = interactiveResponse.body.text;
+      console.log("Interactive body response:", buttonResponseText);
+    }
+  } else if (message.message?.templateButtonReplyMessage) {
+    // Handle template button replies
+    buttonResponseText = message.message.templateButtonReplyMessage.selectedId || "";
+    console.log("Template button clicked:", buttonResponseText);
+  }
+
+  // Additional debugging for unknown button types
+  if (!buttonResponseText && (messageType !== 'conversation' && messageType !== 'extendedTextMessage')) {
+    console.log("Unknown message type received:", messageType);
+    console.log("Message content:", JSON.stringify(message.message, null, 2));
   }
 
   const quotedMessage = message.quoted ? message.quoted : message;
