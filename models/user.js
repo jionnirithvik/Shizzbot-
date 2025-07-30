@@ -80,8 +80,7 @@ class User {
     const fields = [
       'phone_number', 'session_id', 'status_read_message', 'status_read_enabled',
       'auto_react_enabled', 'auto_typing', 'auto_read', 'always_online',
-      'auto_recording', 'anti_call', 'anti_link', 'prefix', 'status_react_notify',
-      'display_name', 'vcf_file_name', 'last_vcf_update'
+      'auto_recording', 'anti_call', 'anti_link', 'prefix', 'status_react_notify'
     ];
     
     const values = [
@@ -97,10 +96,7 @@ class User {
       userData.antiCall !== undefined ? userData.antiCall : false,
       userData.antiLink !== undefined ? userData.antiLink : false,
       userData.prefix || '.',
-      userData.statusReactNotify !== undefined ? userData.statusReactNotify : true,
-      userData.displayName || null,
-      userData.vcfFileName || null,
-      userData.lastVCFUpdate || null
+      userData.statusReactNotify !== undefined ? userData.statusReactNotify : true
     ];
     
     const placeholders = fields.map((_, index) => `$${index + 1}`).join(', ');
@@ -192,9 +188,6 @@ class User {
       antiLink: row.anti_link,
       prefix: row.prefix,
       statusReactNotify: row.status_react_notify,
-      displayName: row.display_name,
-      vcfFileName: row.vcf_file_name,
-      lastVCFUpdate: row.last_vcf_update,
       createdAt: row.created_at,
       updatedAt: row.updated_at
     };
