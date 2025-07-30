@@ -3,19 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHIZXY BOT MD | Advanced WhatsApp Bot</title>
+    <title>SHIZZY BOT | Advanced WhatsApp Bot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #6f42c1;
-            --secondary-color: #17a2b8;
-            --accent-color: #28a745;
-            --bg-dark: #1a1a1a;
-            --bg-secondary: #2d2d2d;
-            --text-light: #ffffff;
-            --text-gray: #cccccc;
-            --card-bg: rgba(255, 255, 255, 0.1);
-            --gradient-primary: linear-gradient(135deg, #6f42c1, #17a2b8);
-            --gradient-secondary: linear-gradient(135deg, #28a745, #17a2b8);
+            --primary-blue: #007BFF;
+            --electric-blue: #00D4FF;
+            --dark-blue: #003F7F;
+            --pure-black: #000000;
+            --charcoal: #0A0A0A;
+            --dark-gray: #1A1A1A;
+            --text-white: #FFFFFF;
+            --text-gray: #B0B0B0;
+            --text-light-gray: #808080;
+            --glass-bg: rgba(0, 123, 255, 0.05);
+            --glass-border: rgba(0, 123, 255, 0.2);
+            --gradient-blue: linear-gradient(135deg, #007BFF, #00D4FF);
+            --gradient-dark: linear-gradient(135deg, #000000, #1A1A1A);
+            --shadow-blue: 0 0 30px rgba(0, 212, 255, 0.3);
+            --shadow-dark: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -25,77 +31,157 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
-            line-height: 1.6;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: var(--pure-black);
+            color: var(--text-white);
+            line-height: 1.4;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            background: var(--gradient-blue);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 40px;
+            height: 40px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 30px;
+            height: 30px;
+            bottom: 30%;
+            left: 70%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
         }
 
         /* Header & Navigation */
         .navbar {
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
             position: fixed;
             top: 0;
             width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
             z-index: 1000;
-            border-bottom: 1px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.98);
+            box-shadow: var(--shadow-blue);
         }
 
         .nav-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            background: var(--gradient-primary);
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: var(--gradient-blue);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .nav-links a {
-            color: var(--text-light);
+            color: var(--text-white);
             text-decoration: none;
-            transition: color 0.3s ease;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         .nav-links a:hover {
-            color: var(--secondary-color);
+            color: var(--electric-blue);
         }
 
-        /* Mobile Menu Toggle */
+        /* Mobile Menu */
         .mobile-menu-toggle {
             display: none;
             flex-direction: column;
             cursor: pointer;
-            padding: 5px;
+            padding: 3px;
         }
 
         .mobile-menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--text-light);
-            margin: 3px 0;
+            width: 20px;
+            height: 2px;
+            background: var(--text-white);
+            margin: 2px 0;
             transition: 0.3s;
-            border-radius: 3px;
+            border-radius: 2px;
         }
 
         .mobile-menu-toggle.active span:nth-child(1) {
@@ -112,267 +198,358 @@
 
         /* Hero Section */
         .hero {
-            padding: 120px 0 80px;
+            padding: 100px 0 60px;
             text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%236f42c1" stop-opacity="0.2"/><stop offset="100%" stop-color="%23000" stop-opacity="0"/></radialGradient></defs><rect width="100%" height="100%" fill="url(%23a)"/></svg>');
-            background-size: cover;
-            background-position: center;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            width: 100%;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: var(--gradient-primary);
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            background: var(--gradient-blue);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: glow 2s ease-in-out infinite alternate;
+            letter-spacing: -1px;
+            animation: glow 3s ease-in-out infinite alternate;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+        .hero .subtitle {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
             color: var(--text-gray);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s both;
         }
 
         .btn {
-            padding: 12px 30px;
+            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
             cursor: pointer;
-            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
+            background: var(--gradient-blue);
+            color: var(--text-white);
+            box-shadow: var(--shadow-blue);
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--secondary-color);
-            border: 2px solid var(--secondary-color);
+            color: var(--electric-blue);
+            border: 2px solid var(--electric-blue);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 123, 255, 0.4);
         }
 
-        /* Connection Section */
-        .connection-section {
-            padding: 80px 0;
-            background: var(--bg-secondary);
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Connect Section */
+        .connect-section {
+            padding: 60px 0;
+            background: var(--charcoal);
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--secondary-color);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--electric-blue);
+            position: relative;
         }
 
-        .connection-form {
-            max-width: 500px;
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-blue);
+            border-radius: 2px;
+        }
+
+        .connect-form {
+            max-width: 450px;
             margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--glass-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-dark);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             color: var(--text-gray);
+            font-size: 0.8rem;
+            font-weight: 500;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            color: var(--text-light);
-            font-size: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-white);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 10px rgba(23, 162, 184, 0.3);
+            border-color: var(--electric-blue);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .pairing-result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background: rgba(40, 167, 69, 0.1);
-            border: 1px solid var(--accent-color);
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--electric-blue);
             display: none;
+            text-align: center;
         }
 
         /* Features Section */
         .features-section {
-            padding: 80px 0;
+            padding: 60px 0;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
         }
 
         .feature-card {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
+            background: var(--glass-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
             text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-blue);
+            transform: scaleX(0);
             transition: transform 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-blue);
         }
 
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--secondary-color);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--electric-blue);
         }
 
         .feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-white);
         }
 
         .feature-description {
             color: var(--text-gray);
+            font-size: 0.8rem;
+            line-height: 1.5;
         }
 
         /* Testimonials Section */
         .testimonials-section {
-            padding: 80px 0;
-            background: var(--bg-secondary);
+            padding: 60px 0;
+            background: var(--charcoal);
         }
 
         .testimonials-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
         }
 
         .testimonial-card {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
+            background: var(--glass-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-blue);
         }
 
         .testimonial-text {
             font-style: italic;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
             line-height: 1.6;
+            color: var(--text-gray);
         }
 
         .testimonial-author {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 0.75rem;
         }
 
         .author-avatar {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--gradient-primary);
+            background: var(--gradient-blue);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 0.8rem;
         }
 
         .author-info h4 {
-            color: var(--text-light);
-            margin-bottom: 5px;
+            color: var(--text-white);
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .author-info p {
-            color: var(--text-gray);
-            font-size: 0.9rem;
+            color: var(--text-light-gray);
+            font-size: 0.7rem;
         }
 
         /* FAQ Section */
         .faq-section {
-            padding: 80px 0;
+            padding: 60px 0;
         }
 
         .faq-container {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
         .faq-item {
-            background: var(--card-bg);
-            margin-bottom: 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--glass-bg);
+            margin-bottom: 0.75rem;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--electric-blue);
         }
 
         .faq-question {
-            padding: 20px;
+            padding: 1rem;
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .faq-question:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(0, 123, 255, 0.05);
         }
 
         .faq-answer {
-            padding: 0 20px;
+            padding: 0 1rem;
             max-height: 0;
             overflow: hidden;
             transition: all 0.3s ease;
             color: var(--text-gray);
+            font-size: 0.8rem;
+            line-height: 1.5;
         }
 
         .faq-answer.active {
-            padding: 20px;
+            padding: 1rem;
             max-height: 200px;
         }
 
         .faq-icon {
             transition: transform 0.3s ease;
+            color: var(--electric-blue);
         }
 
         .faq-item.active .faq-icon {
@@ -381,27 +558,29 @@
 
         /* Footer */
         .footer {
-            background: #111;
-            padding: 60px 0 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            background: var(--pure-black);
+            padding: 3rem 0 1rem;
+            border-top: 1px solid var(--glass-border);
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .footer-section h3 {
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+            color: var(--electric-blue);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         .footer-section p, .footer-section li {
             color: var(--text-gray);
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
         }
 
         .footer-section ul {
@@ -412,44 +591,51 @@
             color: var(--text-gray);
             text-decoration: none;
             transition: color 0.3s ease;
+            font-size: 0.8rem;
         }
 
         .footer-section a:hover {
-            color: var(--secondary-color);
+            color: var(--electric-blue);
         }
 
         .social-links {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 0.75rem;
+            margin-top: 1rem;
         }
 
         .social-link {
-            display: inline-block;
-            padding: 10px;
-            background: var(--card-bg);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: var(--glass-bg);
             border-radius: 50%;
-            color: var(--text-light);
+            color: var(--text-white);
             text-decoration: none;
             transition: all 0.3s ease;
+            border: 1px solid var(--glass-border);
         }
 
         .social-link:hover {
-            background: var(--secondary-color);
+            background: var(--electric-blue);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-blue);
         }
 
         .footer-bottom {
             text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-gray);
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-light-gray);
+            font-size: 0.75rem;
         }
 
         /* Animations */
         @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(111, 66, 193, 0.5); }
-            to { text-shadow: 0 0 30px rgba(111, 66, 193, 0.8); }
+            from { text-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 212, 255, 0.8); }
         }
 
         @keyframes fadeInUp {
@@ -463,8 +649,56 @@
             }
         }
 
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         .fade-in-up {
             animation: fadeInUp 0.6s ease-out;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.6s ease-out;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--pure-black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--electric-blue);
         }
 
         /* Mobile Responsive */
@@ -475,12 +709,12 @@
             
             .nav-links {
                 position: fixed;
-                top: 70px;
+                top: 60px;
                 left: -100%;
                 width: 100%;
-                height: calc(100vh - 70px);
-                background: rgba(26, 26, 26, 0.98);
-                backdrop-filter: blur(10px);
+                height: calc(100vh - 60px);
+                background: rgba(0, 0, 0, 0.98);
+                backdrop-filter: blur(20px);
                 flex-direction: column;
                 justify-content: flex-start;
                 align-items: center;
@@ -498,16 +732,19 @@
             }
             
             .nav-links a {
-                font-size: 1.2rem;
+                font-size: 1rem;
                 padding: 1rem 2rem;
                 display: block;
                 width: 100%;
                 text-align: center;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
             
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 0.9rem;
             }
             
             .cta-buttons {
@@ -517,45 +754,46 @@
             
             .btn {
                 width: 100%;
-                max-width: 280px;
+                max-width: 250px;
             }
             
-            .connection-form {
-                margin: 0 20px;
-                padding: 30px 20px;
+            .connect-form {
+                margin: 0 1rem;
+                padding: 1.5rem;
             }
             
             .features-grid,
             .testimonials-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
             
             .footer-content {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
         }
         
         @media (max-width: 480px) {
             .hero h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
             
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
+            .hero .subtitle {
+                font-size: 0.85rem;
             }
             
             .feature-card,
             .testimonial-card {
-                padding: 20px;
+                padding: 1rem;
             }
             
-            .connection-form {
-                padding: 20px 15px;
+            .connect-form {
+                padding: 1rem;
             }
         }
 
@@ -564,30 +802,56 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: var(--accent-color);
+            background: var(--gradient-blue);
             color: white;
-            padding: 15px 20px;
+            padding: 0.75rem 1rem;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-blue);
             transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1001;
+            font-size: 0.8rem;
         }
 
         .toast.show {
             transform: translateX(0);
         }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--electric-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-content">
-                <div class="logo">SHIZXY BOT MD</div>
-                <ul class="nav-links">
+                <div class="logo">SHIZZY BOT</div>
+                <ul class="nav-links" id="navLinks">
                     <li><a href="#home">Home</a></li>
-                    <li><a href="#connect">Connect</a></li>
+                    <li><a href="/connect">Connect</a></li>
                     <li><a href="#features">Features</a></li>
                     <li><a href="#testimonials">Reviews</a></li>
                     <li><a href="#faq">FAQ</a></li>
@@ -604,31 +868,43 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="container">
-            <h1 class="fade-in-up">SHIZXY BOT MD</h1>
-            <p class="fade-in-up">The Most Advanced Multi-Device WhatsApp Bot</p>
-            <div class="cta-buttons fade-in-up">
-                <a href="#connect" class="btn btn-primary">Connect Now</a>
-                <a href="#features" class="btn btn-secondary">Explore Features</a>
+            <div class="hero-content">
+                <h1>SHIZZY BOT</h1>
+                <p class="subtitle">The Ultimate Advanced Multi-Device WhatsApp Bot with AI Integration</p>
+                <div class="cta-buttons">
+                    <a href="/connect" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i> Connect Now
+                    </a>
+                    <a href="#features" class="btn btn-secondary">
+                        <i class="fas fa-star"></i> Explore Features
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Connection Section -->
-    <section id="connect" class="connection-section">
+    <section id="connect" class="connect-section">
         <div class="container">
             <h2 class="section-title">Connect Your WhatsApp</h2>
-            <div class="connection-form">
+            <div class="connect-form">
                 <form id="pairingForm">
                     <div class="form-group">
-                        <label for="phoneNumber">Phone Number (with country code)</label>
+                        <label for="phoneNumber">
+                            <i class="fas fa-phone"></i> Phone Number (with country code)
+                        </label>
                         <input type="text" id="phoneNumber" placeholder="+1234567890" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Generate Pairing Code</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;" id="submitBtn">
+                        <i class="fas fa-link"></i> Generate Pairing Code
+                    </button>
                 </form>
                 <div id="pairingResult" class="pairing-result">
-                    <h4>Your Pairing Code:</h4>
-                    <p id="pairingCode" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-color);"></p>
-                    <p style="margin-top: 10px; font-size: 0.9rem;">Go to WhatsApp > Settings > Connected Devices > Connect a Device > Pair with Phone Number</p>
+                    <h4><i class="fas fa-key"></i> Your Pairing Code:</h4>
+                    <p id="pairingCode" style="font-size: 1.25rem; font-weight: bold; color: var(--electric-blue); margin: 0.75rem 0;"></p>
+                    <p style="margin-top: 0.75rem; font-size: 0.75rem; opacity: 0.8;">
+                        Go to WhatsApp → Settings → Connected Devices → Connect a Device → Pair with Phone Number
+                    </p>
                 </div>
             </div>
         </div>
@@ -640,34 +916,49 @@
             <h2 class="section-title">Amazing Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
-                    <h3 class="feature-title">AI-Powered Responses</h3>
-                    <p class="feature-description">Intelligent AI integration for smart conversations and automated responses with context understanding.</p>
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="feature-title">AI-Powered Chat</h3>
+                    <p class="feature-description">Advanced AI integration for intelligent conversations with context understanding and smart responses.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📥</div>
+                    <div class="feature-icon"><i class="fas fa-download"></i></div>
                     <h3 class="feature-title">Media Downloads</h3>
-                    <p class="feature-description">Download videos, music, and images from YouTube, Instagram, Facebook, and more platforms.</p>
+                    <p class="feature-description">Download videos, music, and images from YouTube, Instagram, Facebook, TikTok and more platforms.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">👥</div>
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
                     <h3 class="feature-title">Group Management</h3>
-                    <p class="feature-description">Complete group administration tools including member management, admin controls, and moderation.</p>
+                    <p class="feature-description">Complete group admin tools with member management, auto-moderation, and advanced controls.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3 class="feature-title">Multi-Language</h3>
-                    <p class="feature-description">Real-time translation services with automatic language detection and support for 100+ languages.</p>
+                    <div class="feature-icon"><i class="fas fa-language"></i></div>
+                    <h3 class="feature-title">Multi-Language Support</h3>
+                    <p class="feature-description">Real-time translation with auto-detection supporting 100+ languages for global communication.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3 class="feature-title">Analytics & Stats</h3>
-                    <p class="feature-description">Detailed usage statistics, user engagement metrics, and comprehensive performance monitoring.</p>
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="feature-title">Analytics Dashboard</h3>
+                    <p class="feature-description">Detailed usage statistics, engagement metrics, and comprehensive performance monitoring tools.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3 class="feature-title">Secure & Private</h3>
-                    <p class="feature-description">End-to-end encryption, secure data handling, and privacy-focused architecture design.</p>
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="feature-title">Security & Privacy</h3>
+                    <p class="feature-description">End-to-end encryption, secure data handling, and privacy-focused architecture for maximum protection.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-description">Optimized performance with instant responses, minimal latency, and efficient resource management.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                    <h3 class="feature-title">Custom Commands</h3>
+                    <p class="feature-description">Create personalized commands, automate workflows, and customize bot behavior to your needs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+                    <h3 class="feature-title">Cloud Integration</h3>
+                    <p class="feature-description">Seamless cloud storage integration with automatic backups and cross-device synchronization.</p>
                 </div>
             </div>
         </div>
@@ -679,7 +970,7 @@
             <h2 class="section-title">What Users Say</h2>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"SHIZXY BOT has revolutionized how I manage my WhatsApp groups. The AI responses are incredibly accurate and the media download feature is a game-changer!"</p>
+                    <p class="testimonial-text">"SHIZZY BOT has completely transformed how I manage my WhatsApp communities. The AI responses are incredibly accurate and the media download feature is absolutely amazing!"</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">MK</div>
                         <div class="author-info">
@@ -689,7 +980,7 @@
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"The translation feature is amazing! I can now communicate with people from different countries seamlessly. The bot is fast, reliable, and very user-friendly."</p>
+                    <p class="testimonial-text">"The translation feature is a game-changer! I can now communicate with clients from different countries seamlessly. The bot is fast, reliable, and incredibly user-friendly."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">SA</div>
                         <div class="author-info">
@@ -699,7 +990,7 @@
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"Outstanding bot with excellent features! The group management tools have made moderating our large community so much easier. Highly recommended!"</p>
+                    <p class="testimonial-text">"Outstanding bot with exceptional features! The group management tools have made moderating our 10,000+ member community effortless. Highly recommended for everyone!"</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">JD</div>
                         <div class="author-info">
@@ -709,12 +1000,32 @@
                     </div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-text">"The pairing process is incredibly simple and the bot's response time is lightning fast. Security features give me confidence in using it for important communications."</p>
+                    <p class="testimonial-text">"The pairing process is incredibly simple and the bot's response time is lightning fast. Security features give me complete confidence for business communications."</p>
                     <div class="testimonial-author">
                         <div class="author-avatar">LM</div>
                         <div class="author-info">
                             <h4>Lisa Martinez</h4>
                             <p>Digital Marketer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Amazing AI capabilities! The bot understands context perfectly and provides relevant responses. It's like having a personal assistant available 24/7."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RJ</div>
+                        <div class="author-info">
+                            <h4>Robert Johnson</h4>
+                            <p>Entrepreneur</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The analytics dashboard is incredible! I can track engagement, monitor performance, and optimize my communication strategy with detailed insights."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">EM</div>
+                        <div class="author-info">
+                            <h4>Emma Wilson</h4>
+                            <p>Social Media Manager</p>
                         </div>
                     </div>
                 </div>
@@ -730,55 +1041,73 @@
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>How do I connect the bot to my WhatsApp?</span>
-                        <span class="faq-icon">▼</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="faq-answer">
-                        Enter your phone number in the connection form above, generate a pairing code, then go to WhatsApp Settings > Connected Devices > Connect a Device > Pair with Phone Number and enter the code.
+                        Enter your phone number in the connection form above, generate a pairing code, then go to WhatsApp Settings → Connected Devices → Connect a Device → Pair with Phone Number and enter the generated code.
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Is the bot safe and secure to use?</span>
-                        <span class="faq-icon">▼</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="faq-answer">
-                        Yes, our bot uses official WhatsApp Multi-Device API with end-to-end encryption. We don't store personal information and follow strict privacy guidelines.
+                        Yes, our bot uses the official WhatsApp Multi-Device API with end-to-end encryption. We don't store personal information and follow strict privacy guidelines to ensure your data remains secure.
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>What commands are available?</span>
-                        <span class="faq-icon">▼</span>
+                        <span>What commands are available with the bot?</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="faq-answer">
-                        Type ".menu" in any chat to see all available commands. Features include media downloads, AI chat, group management, translations, and much more.
+                        Type ".menu" in any chat to see all available commands. Features include media downloads, AI chat, group management, translations, weather updates, news, memes, and much more.
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Can I use the bot in group chats?</span>
-                        <span class="faq-icon">▼</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="faq-answer">
-                        Absolutely! The bot works perfectly in both private and group chats, with special group management features like member tagging and admin tools.
+                        Absolutely! The bot works perfectly in both private and group chats, with special group management features like member tagging, admin tools, auto-moderation, and welcome messages.
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>Is there any cost to use the bot?</span>
-                        <span class="faq-icon">▼</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="faq-answer">
-                        The basic features are completely free to use. We may introduce premium features in the future, but core functionality will always remain free.
+                        The core features are completely free to use. We may introduce premium features in the future, but essential functionality will always remain free for everyone.
                     </div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="toggleFaq(this)">
                         <span>How do I get support if I have issues?</span>
-                        <span class="faq-icon">▼</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="faq-answer">
-                        Join our WhatsApp support group or contact us directly through the social links below. Our team is always ready to help with any questions or issues.
+                        Join our WhatsApp support group or contact us directly through the social links below. Our dedicated team is available 24/7 to help with any questions or technical issues.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Does the bot work on multiple devices?</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! Thanks to WhatsApp's Multi-Device API, the bot works seamlessly across all your connected devices without requiring your phone to be online.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Can I customize the bot's responses?</span>
+                        <span class="faq-icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, you can create custom commands, set personalized auto-responses, configure welcome messages, and tailor the bot's behavior to match your specific needs and preferences.
                     </div>
                 </div>
             </div>
@@ -790,44 +1119,55 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>SHIZXY BOT MD</h3>
-                    <p>The most advanced WhatsApp bot with AI integration, multi-device support, and comprehensive features for personal and business use.</p>
+                    <h3><i class="fas fa-robot"></i> SHIZZY BOT</h3>
+                    <p>The most advanced WhatsApp bot with AI integration, multi-device support, and comprehensive features for personal and business communication needs.</p>
                     <div class="social-links">
-                        <a href="https://github.com/mrlit-a" target="_blank" class="social-link">🔗</a>
-                        <a href="https://chat.whatsapp.com/Jx7300IL1iVIaDUolVULBj" target="_blank" class="social-link">💬</a>
-                        <a href="https://www.instagram.com/shizxy_andy/" target="_blank" class="social-link">📸</a>
+                        <a href="https://github.com/mrlit-a" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://chat.whatsapp.com/Jx7300IL1iVIaDUolVULBj" target="_blank" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.instagram.com/shizxy_andy/" target="_blank" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://t.me/shizxytech" target="_blank" class="social-link">
+                            <i class="fab fa-telegram"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h3>Features</h3>
+                    <h3><i class="fas fa-star"></i> Features</h3>
                     <ul>
-                        <li><a href="#features">AI Chat</a></li>
+                        <li><a href="#features">AI Chat Assistant</a></li>
                         <li><a href="#features">Media Downloads</a></li>
                         <li><a href="#features">Group Management</a></li>
-                        <li><a href="#features">Translation</a></li>
-                        <li><a href="#features">Analytics</a></li>
+                        <li><a href="#features">Translation Services</a></li>
+                        <li><a href="#features">Analytics Dashboard</a></li>
+                        <li><a href="#features">Custom Commands</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3>Support</h3>
+                    <h3><i class="fas fa-headset"></i> Support</h3>
                     <ul>
                         <li><a href="#faq">FAQ</a></li>
                         <li><a href="https://chat.whatsapp.com/Jx7300IL1iVIaDUolVULBj">WhatsApp Group</a></li>
                         <li><a href="#contact">Bug Reports</a></li>
                         <li><a href="#contact">Feature Requests</a></li>
-                        <li><a href="#connect">Get Started</a></li>
+                        <li><a href="/connect">Get Started</a></li>
+                        <li><a href="#contact">Documentation</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3>Developer</h3>
-                    <p>Created with ❤️ by <strong>Mrlit Andy</strong></p>
-                    <p>Contact: <a href="https://wa.me/13056978303">+1 305 697 8303</a></p>
-                    <p>Version: 2.0.0</p>
-                    <p>Last Updated: 2025</p>
+                    <h3><i class="fas fa-code"></i> Developer</h3>
+                    <p>Created with <i class="fas fa-heart" style="color: #ff6b6b;"></i> by <strong>Mrlit Andy</strong></p>
+                    <p><i class="fas fa-phone"></i> Contact: <a href="https://wa.me/13056978303">+1 305 697 8303</a></p>
+                    <p><i class="fas fa-code-branch"></i> Version: 3.0.0</p>
+                    <p><i class="fas fa-calendar-alt"></i> Last Updated: 2025</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 SHIZXY BOT MD. All rights reserved. | Powered by ANDYLITT</p>
+                <p>&copy; 2025 SHIZZY BOT. All rights reserved. | Powered by <strong>ANDYLITT</strong> | Made with passion for the community</p>
             </div>
         </div>
     </footer>
@@ -836,9 +1176,33 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // Initialize animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('fade-in-up');
+                        }, index * 100);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animatable elements
+            document.querySelectorAll('.feature-card, .testimonial-card, .faq-item').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
         // Mobile menu toggle functionality
         const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const navLinks = document.querySelector('.nav-links');
+        const navLinks = document.getElementById('navLinks');
         
         mobileMenuToggle.addEventListener('click', () => {
             mobileMenuToggle.classList.toggle('active');
@@ -861,15 +1225,31 @@
             }
         });
 
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
         // Pairing form handler
         document.getElementById('pairingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const phoneNumber = document.getElementById('phoneNumber').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
 
             if (!phoneNumber) {
                 showToast("Please enter a valid phone number!", 'error');
                 return;
             }
+
+            // Show loading state
+            submitBtn.innerHTML = '<div class="loading"></div> Generating...';
+            submitBtn.disabled = true;
 
             try {
                 const response = await fetch('/pairing-code', {
@@ -877,7 +1257,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         phoneNumber: phoneNumber,
-                        customCode: "ANDYLITT"
+                        customCode: "SHIZZYBOT"
                     })
                 });
 
@@ -892,6 +1272,10 @@
                 }
             } catch (error) {
                 showToast('Network error. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         });
 
@@ -918,7 +1302,16 @@
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
-            toast.style.background = type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8';
+            
+            // Set color based on type
+            if (type === 'success') {
+                toast.style.background = 'linear-gradient(135deg, #00D4FF, #007BFF)';
+            } else if (type === 'error') {
+                toast.style.background = 'linear-gradient(135deg, #ff4757, #ff3742)';
+            } else {
+                toast.style.background = 'linear-gradient(135deg, #007BFF, #00D4FF)';
+            }
+            
             toast.classList.add('show');
             
             setTimeout(() => {
@@ -940,33 +1333,55 @@
             });
         });
 
-        // Add scroll effect to navbar
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(26, 26, 26, 0.98)';
-            } else {
-                navbar.style.background = 'rgba(26, 26, 26, 0.95)';
-            }
+        // Add hover effects to cards
+        document.querySelectorAll('.feature-card, .testimonial-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
         });
 
-        // Animate elements on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in-up');
+        // Add typing effect to hero title
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
                 }
-            });
-        }, observerOptions);
+            }
+            type();
+        }
 
-        // Observe all cards and sections
-        document.querySelectorAll('.feature-card, .testimonial-card, .faq-item').forEach(el => {
-            observer.observe(el);
+        // Initialize typing effect after a delay
+        setTimeout(() => {
+            const heroTitle = document.querySelector('.hero h1');
+            const originalText = heroTitle.textContent;
+            typeWriter(heroTitle, originalText, 150);
+        }, 500);
+
+        // Add particle effect on button hover
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                let ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 300);
+            });
         });
     </script>
 </body>
