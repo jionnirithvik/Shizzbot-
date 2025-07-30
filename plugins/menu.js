@@ -137,7 +137,7 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
     }
 };
 
-export const command = ['allmenu', 'andy', 'shizzy', 'commands'];
+export const command = ['allmenu', 'menu', 'andy', 'shizzy', 'commands'];
 export const description = 'Display bot menu with all available commands';
 export const category = 'Main';
 export const usage = 'menu';
