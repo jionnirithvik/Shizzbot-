@@ -64,42 +64,22 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
                                     {
                                         title: "📂 ᴀʟʟ ᴍᴇɴᴜ",
                                         description: "ᴏᴘᴇɴ ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅꜱ",
-                                        id: `${prefix}menu`,
-                                    },
-                                    {
-                                        title: "📥 ᴅᴏᴡɴʟᴏᴀᴅ",
-                                        description: "ᴅᴏᴡɴʟᴏᴀᴅ ᴍᴇᴅɪᴀ ғʀᴏᴍ ᴜʀʟ",
-                                        id: `${prefix}song hello`,
+                                        id: `${prefix}allmenu`,
                                     },
                                     {
                                         title: "👑 ᴏᴡɴᴇʀ",
                                         description: "ᴄᴏɴᴛᴀᴄᴛ ʙᴏᴛ ᴏᴡɴᴇʀ",
-                                        id: `${prefix}ping`,
+                                        id: `${prefix}owner`,
                                     },
                                     {
-                                        title: "🖼️ sᴛɪᴄᴋᴇʀ",
-                                        description: "ᴄᴏɴᴠᴇʀᴛ ɪᴍᴀɢᴇ ᴛᴏ sᴛɪᴄᴋᴇʀ",
-                                        id: `${prefix}ping`,
+                                        title: "✍️ ᴀᴜᴛᴏᴛʏᴘɪɴɢ ᴏɴ",
+                                        description: "ᴇɴᴀʙʟᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄ ᴛʏᴘɪɴɢ",
+                                        id: `${prefix}autotyping on`,
                                     },
                                     {
-                                        title: "🎵 sᴏɴɢ sᴇᴀʀᴄʜ",
-                                        description: "sᴇᴀʀᴄʜ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ sᴏɴɢs",
-                                        id: `${prefix}play hello`,
-                                    },
-                                    {
-                                        title: "🎬 ᴠɪᴅᴇᴏ sᴇᴀʀᴄʜ",
-                                        description: "sᴇᴀʀᴄʜ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ ᴠɪᴅᴇᴏs",
-                                        id: `${prefix}video hello`,
-                                    },
-                                    {
-                                        title: "⚙️ sᴇᴛᴛɪɴɢs",
-                                        description: "ʙᴏᴛ sᴇᴛᴛɪɴɢs ᴀɴᴅ ᴄᴏɴғɪɢ",
-                                        id: `${prefix}setprefix !`,
-                                    },
-                                    {
-                                        title: "🔗 ᴀɴᴛɪʟɪɴᴋ",
-                                        description: "ᴛᴏɢɢʟᴇ ᴀɴᴛɪʟɪɴᴋ ᴏɴ/ᴏғғ",
-                                        id: `${prefix}antilink`,
+                                        title: "🚫 ᴀᴜᴛᴏᴛʏᴘɪɴɢ ᴏғғ",
+                                        description: "ᴅɪsᴀʙʟᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄ ᴛʏᴘɪɴɢ",
+                                        id: `${prefix}autotyping off`,
                                     },
                                 ],
                             },
@@ -134,7 +114,7 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
     }
 };
 
-export const command = ['menu', 'help', 'alive'];
+export const command = ['list', 'listmenu', 'help'];
 export const description = 'Display interactive bot menu with selectable options';
 export const category = 'Main';
 export const usage = 'listmenu';
