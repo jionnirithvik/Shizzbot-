@@ -19,24 +19,32 @@ class VCFManager {
   // Parse phone number and get country info
   parsePhoneNumber(phoneNumber) {
     try {
-      const parsed = parsePhoneNumber(phoneNumber);
+      // Ensure phone number has + prefix for proper parsing
+      let formattedNumber = phoneNumber;
+      if (!phoneNumber.startsWith('+')) {
+        formattedNumber = '+' + phoneNumber;
+      }
+      
+      const parsed = parsePhoneNumber(formattedNumber);
       return {
         isValid: parsed.valid,
         international: parsed.number?.international,
         national: parsed.number?.national, 
         countryCode: parsed.countryCode,
         regionCode: parsed.regionCode,
-        formatted: parsed.number?.e164
+        formatted: parsed.number?.e164 || formattedNumber
       };
     } catch (error) {
       console.log('Error parsing phone number:', error.message);
+      // Fallback: ensure we return the phone number in a usable format
+      const fallbackNumber = phoneNumber.startsWith('+') ? phoneNumber : '+' + phoneNumber;
       return {
         isValid: false,
-        international: phoneNumber,
+        international: fallbackNumber,
         national: phoneNumber,
         countryCode: null,
         regionCode: 'Unknown',
-        formatted: phoneNumber
+        formatted: fallbackNumber
       };
     }
   }
