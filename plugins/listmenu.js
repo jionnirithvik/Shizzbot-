@@ -134,7 +134,7 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
     }
 };
 
-export const command = ['listmenu', 'list', 'imenu'];
+export const command = ['menu', 'help', 'alive'];
 export const description = 'Display interactive bot menu with selectable options';
 export const category = 'Main';
 export const usage = 'listmenu';
