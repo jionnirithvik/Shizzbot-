@@ -65,4 +65,8 @@ auth_info*
 # Coverage directory used by tools like istanbul
 coverage/
 
+# Test files
+test-session-organization.js
+test-multiuser-organization.js
+
 

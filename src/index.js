@@ -43,7 +43,7 @@ function decodeJid(jid) {
   return user && server ? `${user}@${server}`.trim() : jid;
 }
 
-async function uploadCredsToMega(filePath) {
+async function uploadCredsToMega(filePath, sessionId) {
   try {
     const megaCredentials = {
       email: process.env.MEGA_EMAIL || "your-email@example.com",
@@ -63,18 +63,33 @@ async function uploadCredsToMega(filePath) {
       throw new Error(`File not found: ${filePath}`);
     }
 
+    // Create organized folder structure: sessions/{sessionId}/creds.json
+    const sessionFolderName = `sessions_${sessionId}`;
+    
+    // Try to find existing session folder or create new one
+    let sessionFolder = Object.values(storage.files).find(file => 
+      file.name === sessionFolderName && file.directory
+    );
+    
+    if (!sessionFolder) {
+      // Create session folder if it doesn't exist
+      sessionFolder = await storage.mkdir(sessionFolderName);
+      console.log(`📁 Created session folder: ${sessionFolderName}`);
+    }
+
     const fileSize = fs.statSync(filePath).size;
     const fileInfo = {
       name: "creds.json",
-      size: fileSize
+      size: fileSize,
+      target: sessionFolder
     };
 
     const uploadResult = await storage.upload(fileInfo, fs.createReadStream(filePath)).complete;
-    console.log("✅ File uploaded to Mega successfully.");
+    console.log(`✅ File uploaded to Mega in organized folder: ${sessionFolderName}/creds.json`);
 
     const uploadedFile = storage.files[uploadResult.nodeId];
     const downloadLink = await uploadedFile.link();
-    console.log(`🔗 Download URL for creds.json: ${downloadLink}`);
+    console.log(`🔗 Download URL for ${sessionFolderName}/creds.json: ${downloadLink}`);
 
     return downloadLink;
   } catch (error) {
@@ -85,23 +100,62 @@ async function uploadCredsToMega(filePath) {
 }
 
 async function restoreCredsFromMega(downloadUrl, sessionName) {
-  const restorePath = `./restored_sessions/${sessionName}`;
+  try {
+    const restorePath = `./restored_sessions/${sessionName}`;
 
-  if (!fs.existsSync(restorePath)) {
-    fs.mkdirSync(restorePath, { recursive: true });
-  }
+    if (!fs.existsSync(restorePath)) {
+      fs.mkdirSync(restorePath, { recursive: true });
+    }
 
-  const file = await File.fromURL(downloadUrl);
+    const file = await File.fromURL(downloadUrl);
 
-  await new Promise((resolve, reject) => {
-    file.download((error, data) => {
-      if (error) {
-        return reject(error);
-      }
-      fs.writeFileSync(`${restorePath}/creds.json`, data);
-      resolve();
+    await new Promise((resolve, reject) => {
+      file.download((error, data) => {
+        if (error) {
+          return reject(error);
+        }
+        fs.writeFileSync(`${restorePath}/creds.json`, data);
+        console.log(`📥 Successfully restored session for ${sessionName} from organized Mega storage`);
+        resolve();
+      });
     });
-  });
+  } catch (error) {
+    console.error(`❌ Error restoring session for ${sessionName}:`, error.message);
+    throw error;
+  }
+}
+
+// Helper function to check if a URL is from old unorganized storage
+function isLegacyMegaUrl(sessionId) {
+  // Check if sessionId looks like a Mega URL (starts with https://mega.nz)
+  return typeof sessionId === 'string' && sessionId.startsWith('https://mega.nz');
+}
+
+// Helper function to migrate old session format to new organized format  
+async function migrateLegacySession(phoneNumber, oldSessionId) {
+  try {
+    console.log(`🔄 Migrating legacy session for ${phoneNumber}...`);
+    
+    // Restore from old URL
+    await restoreCredsFromMega(oldSessionId, phoneNumber);
+    
+    // Re-upload to organized structure
+    const credentialsPath = `./restored_sessions/${phoneNumber}/creds.json`;
+    if (fs.existsSync(credentialsPath)) {
+      const newMegaLink = await uploadCredsToMega(credentialsPath, phoneNumber);
+      if (newMegaLink) {
+        // Update database with new organized link
+        await storage.updateUser(phoneNumber, { sessionId: newMegaLink });
+        console.log(`✅ Successfully migrated ${phoneNumber} to organized storage`);
+        return newMegaLink;
+      }
+    }
+    
+    return oldSessionId; // Return old ID if migration fails
+  } catch (error) {
+    console.error(`❌ Failed to migrate legacy session for ${phoneNumber}:`, error.message);
+    return oldSessionId; // Return old ID if migration fails
+  }
 }
 let sock = {}
 let plugins = {};
@@ -190,7 +244,7 @@ async function createBot(sessionId) {
     
     // Try to upload to Mega, but don't fail if it doesn't work
     try {
-      megaUploadLink = await uploadCredsToMega(credentialsPath);
+      megaUploadLink = await uploadCredsToMega(credentialsPath, sessionId);
       if (megaUploadLink) {
         console.log("☁️  Credentials uploaded to Mega: " + megaUploadLink);
       }
@@ -516,6 +570,14 @@ client.ev.on("call", async callData => {
 async function restoreSessionFromDB(phoneNumber, sessionId) {
   try {
     console.log(`Restoring session for phone number: ${phoneNumber}`);
+    
+    // Check if this is a legacy unorganized session
+    if (isLegacyMegaUrl(sessionId)) {
+      console.log(`🔄 Detected legacy session format for ${phoneNumber}, attempting migration...`);
+      const migratedSessionId = await migrateLegacySession(phoneNumber, sessionId);
+      sessionId = migratedSessionId;
+    }
+    
     await restoreCredsFromMega(sessionId, phoneNumber);
     await createRestoredBot(phoneNumber);
   } catch (error) {
