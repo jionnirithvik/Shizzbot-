@@ -833,20 +833,7 @@ async function createRestoredBot(sessionName) {
       return;
     }
 
-    if (message.key.remoteJid === "status@broadcast" && message.message?.["reactionMessage"] && !message.key.fromMe) {
-      const participant = message.key.participant;
-      const name = message.pushName || "User";
-
-      const userQuery = { phoneNumber: sessionName }; // Assuming phone number is in remoteJid
-      const user = await storage.getUserWithDefaults(sessionName);
-
-      if (user && user.statusReactNotify) {
-        const thankYouMessage = `Thanks, ${name}, for reacting to my status!`;
-        const response = { text: thankYouMessage };
-        const quotedMessage = { quoted: message };
-        await socket.sendMessage(participant, response, quotedMessage);
-      }
-    }
+    // Status reactions handling removed - no more "thanks for reacting" messages
   } catch (error) {
     console.error("Error handling messages.upsert event:", error);
   }
