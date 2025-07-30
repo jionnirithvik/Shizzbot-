@@ -1208,11 +1208,6 @@ app.get("/status", (req, res) => {
   });
 });
 
-// Route for connect page (redirect to main page with connect section focused)
-app.get("/connect", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
-});
-
 app.listen(PORT, async () => {
   console.log(`Worker process started on port ${PORT}`);
   await reloadBots();
