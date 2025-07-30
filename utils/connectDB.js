@@ -132,9 +132,39 @@ const createTables = async () => {
         anti_link BOOLEAN DEFAULT false,
         prefix VARCHAR(10) DEFAULT '.',
         status_react_notify BOOLEAN DEFAULT true,
+        display_name VARCHAR(255),
+        vcf_file_name VARCHAR(255),
+        last_vcf_update TIMESTAMP WITH TIME ZONE,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+    `;
+    
+    // Add new columns if they don't exist (for existing databases)
+    const addVCFColumns = `
+      DO $$ 
+      BEGIN 
+        BEGIN
+          ALTER TABLE users ADD COLUMN display_name VARCHAR(255);
+        EXCEPTION
+          WHEN duplicate_column THEN 
+            -- Column already exists, do nothing
+        END;
+        
+        BEGIN
+          ALTER TABLE users ADD COLUMN vcf_file_name VARCHAR(255);
+        EXCEPTION
+          WHEN duplicate_column THEN 
+            -- Column already exists, do nothing
+        END;
+        
+        BEGIN
+          ALTER TABLE users ADD COLUMN last_vcf_update TIMESTAMP WITH TIME ZONE;
+        EXCEPTION
+          WHEN duplicate_column THEN 
+            -- Column already exists, do nothing
+        END;
+      END $$;
     `;
     
     const createUpdatedAtTrigger = `
@@ -154,6 +184,7 @@ const createTables = async () => {
     `;
     
     await pool.query(createUsersTable);
+    await pool.query(addVCFColumns);
     await pool.query(createUpdatedAtTrigger);
     
     console.log("✅ Database tables and triggers created/verified");
