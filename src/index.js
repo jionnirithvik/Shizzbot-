@@ -20,7 +20,8 @@ import { fileURLToPath } from 'url';
 import vcfManager from '../utils/vcfManager.js';
 import vcfScheduler from '../utils/vcfScheduler.js';
 import { doReact, emojis } from '../lib/autoreact.cjs';
-const __dirname = path.dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
