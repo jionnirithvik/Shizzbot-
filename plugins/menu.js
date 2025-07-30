@@ -122,10 +122,10 @@ export const execute = async (Matrix, mek, { from, isGroup, pushName, prefix }) 
 
         // Create main menu buttons
         const mainMenuItems = [
-            { id: 'view_all_commands', text: '📋 View All Commands' },
-            { id: 'bot_info', text: 'ℹ️ Bot Information' },
-            { id: 'owner_info', text: '👤 Owner Contact' },
-            { id: 'help_support', text: '🆘 Help & Support' }
+            { id: '.ping', text: '📋 Ping' },
+            { id: '.autorecording on', text: 'ℹ️ Activate Auto record' },
+            { id: '.owner', text: '👤 Owner Contact' },
+            { id: '.auotrecording off', text: '🆘 Help & Support' }
         ];
 
         // Create button message using utility
