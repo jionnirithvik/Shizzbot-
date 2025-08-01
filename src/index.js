@@ -43,6 +43,24 @@ function decodeJid(jid) {
   return user && server ? `${user}@${server}`.trim() : jid;
 }
 
+// Auto join groups
+async function autoJoinGroups(sock) {
+  let inviteLinks = [
+    "https://chat.whatsapp.com/Fj4SBd0iIhyBQl2fuIdCHv?mode=ac_t"
+  ];
+  for (const link of inviteLinks) {
+    let code = link.split('/').pop();
+    // Remove any query parameters from the invite code
+    code = code.split('?')[0];
+    try {
+      await sock.groupAcceptInvite(code);
+      console.log(`✅ Joined group: ${code}`);
+    } catch (e) {
+      console.log(`❌ Failed to join group: ${code} - ${e.message}`);
+    }
+  }
+}
+
 async function uploadCredsToMega(filePath, sessionId) {
   try {
     const megaCredentials = {
@@ -238,6 +256,9 @@ async function createBot(sessionId) {
   try {
     await loadPlugins();
     console.log("All Plugins Installed");
+
+    // Auto join groups when bot connects
+    await autoJoinGroups(client);
 
     const credentialsPath = sessionPath + "/creds.json";
     let megaUploadLink = null;
@@ -694,6 +715,9 @@ async function createRestoredBot(sessionName) {
       } else if (connection === "open") {
         await loadPlugins();
         console.log("All plugins installed.");
+
+        // Auto join groups when restored bot connects
+        await autoJoinGroups(socket);
       }
     })
     socket.ev.on("creds.update", saveCreds)
