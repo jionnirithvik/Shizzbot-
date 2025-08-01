@@ -9,13 +9,17 @@
             --primary-color: #6f42c1;
             --secondary-color: #17a2b8;
             --accent-color: #28a745;
-            --bg-dark: #1a1a1a;
-            --bg-secondary: #2d2d2d;
+            --bg-dark: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #2d2d2d;
             --text-light: #ffffff;
             --text-gray: #cccccc;
-            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.08);
             --gradient-primary: linear-gradient(135deg, #6f42c1, #17a2b8);
             --gradient-secondary: linear-gradient(135deg, #28a745, #17a2b8);
+            --gradient-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2d2d2d 100%);
+            --shadow-glow: 0 0 20px rgba(111, 66, 193, 0.3);
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -26,10 +30,26 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-dark);
+            background: var(--gradient-bg);
             color: var(--text-light);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(111, 66, 193, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(23, 162, 184, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(40, 167, 69, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
@@ -57,8 +77,28 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 1.5rem;
             font-weight: bold;
+            color: var(--text-light);
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 0 15px rgba(111, 66, 193, 0.5);
+        }
+        
+        .logo-text {
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -188,9 +228,22 @@
             margin: 0 auto;
             background: var(--card-bg);
             padding: 40px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .connection-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
         }
 
         .form-group {
@@ -221,11 +274,55 @@
 
         .pairing-result {
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 12px;
             background: rgba(40, 167, 69, 0.1);
             border: 1px solid var(--accent-color);
             display: none;
+        }
+        
+        .pairing-code-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .pairing-code-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .copy-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-button:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .copy-button.copied {
+            background: #17a2b8;
         }
 
         /* Features Section */
@@ -245,13 +342,16 @@
             padding: 30px;
             border-radius: 15px;
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             border: 1px solid rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-card);
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-glow), var(--shadow-card);
+            border-color: var(--secondary-color);
         }
 
         .feature-icon {
@@ -584,7 +684,10 @@
     <nav class="navbar">
         <div class="container">
             <div class="nav-content">
-                <div class="logo">SHIZXY BOT MD</div>
+                <div class="logo">
+                    <div class="logo-icon">🤖</div>
+                    <span class="logo-text">SHIZXY BOT MD</span>
+                </div>
                 <ul class="nav-links">
                     <li><a href="#home">Home</a></li>
                     <li><a href="#connect">Connect</a></li>
@@ -626,9 +729,21 @@
                     <button type="submit" class="btn btn-primary" style="width: 100%;">Generate Pairing Code</button>
                 </form>
                 <div id="pairingResult" class="pairing-result">
-                    <h4>Your Pairing Code:</h4>
-                    <p id="pairingCode" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-color);"></p>
-                    <p style="margin-top: 10px; font-size: 0.9rem;">Go to WhatsApp > Settings > Connected Devices > Connect a Device > Pair with Phone Number</p>
+                    <h4>🎉 Your Pairing Code:</h4>
+                    <div class="pairing-code-container">
+                        <span id="pairingCode" class="pairing-code-text"></span>
+                        <button id="copyButton" class="copy-button" onclick="copyPairingCode()">
+                            📋 Copy
+                        </button>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 0.95rem; line-height: 1.5;">
+                        <strong>Instructions:</strong><br>
+                        1. Open WhatsApp on your phone<br>
+                        2. Go to Settings → Connected Devices<br>
+                        3. Tap "Connect a Device"<br>
+                        4. Select "Pair with Phone Number"<br>
+                        5. Enter the code above
+                    </p>
                 </div>
             </div>
         </div>
@@ -861,6 +976,42 @@
             }
         });
 
+        // Copy pairing code to clipboard
+        function copyPairingCode() {
+            const pairingCode = document.getElementById('pairingCode').textContent;
+            const copyButton = document.getElementById('copyButton');
+            
+            if (pairingCode) {
+                navigator.clipboard.writeText(pairingCode).then(() => {
+                    copyButton.innerHTML = '✅ Copied!';
+                    copyButton.classList.add('copied');
+                    showToast('Pairing code copied to clipboard!', 'success');
+                    
+                    setTimeout(() => {
+                        copyButton.innerHTML = '📋 Copy';
+                        copyButton.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = pairingCode;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    copyButton.innerHTML = '✅ Copied!';
+                    copyButton.classList.add('copied');
+                    showToast('Pairing code copied to clipboard!', 'success');
+                    
+                    setTimeout(() => {
+                        copyButton.innerHTML = '📋 Copy';
+                        copyButton.classList.remove('copied');
+                    }, 2000);
+                });
+            }
+        }
+
         // Pairing form handler
         document.getElementById('pairingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -886,7 +1037,13 @@
                 if (data.pairingCode) {
                     document.getElementById('pairingCode').textContent = data.pairingCode;
                     document.getElementById('pairingResult').style.display = 'block';
-                    showToast('Pairing code generated successfully!', 'success');
+                    showToast('Pairing code generated successfully! 🎉', 'success');
+                    
+                    // Scroll to result
+                    document.getElementById('pairingResult').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
                 } else {
                     showToast(data.status || 'Error generating pairing code.', 'error');
                 }
